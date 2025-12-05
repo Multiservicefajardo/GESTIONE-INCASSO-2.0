@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Incassi per Veicolo - Multiservice</title>
+  <meta name="description" content="Semplice app per registrare e analizzare incassi per veicolo. Interfaccia leggera, salvataggio locale e grafici integrati" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:title" content="Incassi per Veicolo - Multiservice" />
+  <meta property="og:description" content="Analizza gli incassi dei tuoi veicoli con grafici e report. Progetto statico pronto per deploy." />
+  <meta property="og:type" content="website" />
+  <!-- Fonts & Styles -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+  <a class="brand" href="#" aria-label="Home">
+    <svg width="50" height="50" viewBox="0 0 100 60" fill="none" aria-hidden>
+      <!-- Simple car body -->
+      <rect x="15" y="30" width="70" height="20" rx="3" fill="currentColor"/>
+      <!-- Car roof/cabin -->
+      <path d="M30 30 L35 15 L65 15 L70 30" fill="currentColor"/>
+      <!-- Front wheel -->
+      <circle cx="30" cy="52" r="8" fill="currentColor"/>
+      <circle cx="30" cy="52" r="4" fill="var(--bg-primary)" stroke="currentColor" stroke-width="1"/>
+      <!-- Back wheel -->
+      <circle cx="70" cy="52" r="8" fill="currentColor"/>
+      <circle cx="70" cy="52" r="4" fill="var(--bg-primary)" stroke="currentColor" stroke-width="1"/>
+      <!-- Windows -->
+      <rect x="38" y="18" width="10" height="10" fill="var(--bg-primary)" opacity="0.3"/>
+      <rect x="52" y="18" width="10" height="10" fill="var(--bg-primary)" opacity="0.3"/>
+      <!-- Headlight -->
+      <circle cx="17" cy="35" r="2" fill="#FFD700" opacity="0.8"/>
+    </svg>
+  </a>
+      <nav class="nav" aria-label="Navigazione principale">
+        <!-- header links removed per richiesta -->
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1>Incassi per veicolo</h1>
+    <div class="toolbar" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+  <button id="btnExport" class="btn btn-primary">Esporta dati</button>
+  <button id="btnImport" class="btn btn-primary">Importa dati</button>
+  <button id="btnBackupCloud" class="btn btn-primary" title="Salva backup sul cloud">☁️ Backup Cloud</button>
+  <button id="btnRestoreCloud" class="btn btn-outline" title="Ripristina da cloud">⬇️ Ripristina Cloud</button>
+  <a href="gestione-verbali.html" id="btnGestioneMulte" class="btn btn-primary">Gestione multe</a>
+      <input id="fileInput" type="file" accept="application/json" style="display:none" />
+      <label style="display:flex;align-items:center;gap:8px;margin-left:8px;color:var(--color-muted-on-surface)">
+        <span style="font-size:0.9rem">Mese riferimento</span>
+        <input id="refMonth" type="month" class="input" />
+        <button id="btnClearMonth" class="btn" title="Mostra tutti">Tutti</button>
+      </label>
+      <!-- toolbar note removed per request -->
+    </div>
+
+    <!-- SEZIONE AGGIUNTA VEICOLO -->
+    <section class="card">
+      <h2>Aggiungi veicolo</h2>
+      <form id="vehicleForm">
+        <div class="form-row">
+          <label for="vehicleName">Nome veicolo</label>
+          <input class="input" type="text" id="vehicleName" placeholder="Es. Fiat 500, Kia Sportage" required />
+        </div>
+        <div class="form-row">
+          <label for="vehiclePlate">Targa (opzionale)</label>
+          <input class="input" type="text" id="vehiclePlate" placeholder="Es. AB123CD" />
+        </div>
+        <button type="submit" class="btn btn-primary">Aggiungi veicolo</button>
+      </form>
+    </section>
+    
+    <!-- GRAFICI -->
+    <section class="card">
+      <h2>Grafici</h2>
+      <div class="row" style="gap:20px;align-items:stretch">
+        <div style="flex:1">
+          <canvas id="chartVehicleResults" height="220" aria-label="Grafico incassi per veicolo"></canvas>
+        </div>
+        <div style="width:320px">
+          <canvas id="chartIncomeType" height="220" aria-label="Grafico tipi di incasso"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEZIONE REGISTRAZIONE INCASSO -->
+    <section class="card">
+      <h2>Registra incasso</h2>
+      <form id="incomeForm">
+        <div class="form-row">
+          <label for="incomeVehicle">Veicolo</label>
+          <select class="input" id="incomeVehicle" required>
+            <option value="">Seleziona un veicolo</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="incomeDate">Data</label>
+          <input class="input" type="date" id="incomeDate" required />
+        </div>
+        <div class="form-row">
+          <label for="incomeAmount">Importo (€)</label>
+          <input class="input" type="number" id="incomeAmount" step="0.01" min="0" required />
+        </div>
+        <div class="form-row">
+          <label for="incomeNote">Nota (opzionale)</label>
+          <input class="input" type="text" id="incomeNote" placeholder="Es. Noleggio 3 giorni" />
+        </div>
+        <div id="incomeFormActions" style="display:flex;gap:8px;align-items:center">
+          <button type="submit" class="btn btn-primary">Salva incasso</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- RIEPILOGO PER VEICOLO -->
+    <section class="card">
+      <h2>Riepilogo incassi per veicolo</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Veicolo</th>
+            <th>Incasso totale (€)</th>
+          </tr>
+        </thead>
+        <tbody id="vehicleSummary">
+          <!-- Riga generata da JS -->
+        </tbody>
+      </table>
+
+      <div class="total-box">
+        Totale generale: <span id="grandTotal">0.00</span> €
+      </div>
+    </section>
+
+    <!-- DETTAGLIO INCASSI DEL VEICOLO SELEZIONATO -->
+    <section class="card">
+      <h2>Dettaglio incassi veicolo selezionato</h2>
+      <div class="form-row">
+        <label for="detailVehicle">Veicolo</label>
+        <select id="detailVehicle">
+          <option value="">Seleziona un veicolo</option>
+        </select>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Importo (€)</th>
+            <th>Nota</th>
+            <th>Azioni</th>
+          </tr>
+        </thead>
+        <tbody id="incomeDetails">
+          <!-- Righe generate da JS -->
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="auth.js"></script>
+  <script type="module" src="script.js"></script>
+</body>
+</html>

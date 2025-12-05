@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Gestione verbali — Web App Incasso</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="Home">
+        <svg width="50" height="50" viewBox="0 0 100 60" fill="none" aria-hidden>
+          <!-- Simple car body -->
+          <rect x="15" y="30" width="70" height="20" rx="3" fill="currentColor"/>
+          <!-- Car roof/cabin -->
+          <path d="M30 30 L35 15 L65 15 L70 30" fill="currentColor"/>
+          <!-- Front wheel -->
+          <circle cx="30" cy="52" r="8" fill="currentColor"/>
+          <circle cx="30" cy="52" r="4" fill="var(--bg-primary)" stroke="currentColor" stroke-width="1"/>
+          <!-- Back wheel -->
+          <circle cx="70" cy="52" r="8" fill="currentColor"/>
+          <circle cx="70" cy="52" r="4" fill="var(--bg-primary)" stroke="currentColor" stroke-width="1"/>
+          <!-- Windows -->
+          <rect x="38" y="18" width="10" height="10" fill="var(--bg-primary)" opacity="0.3"/>
+          <rect x="52" y="18" width="10" height="10" fill="var(--bg-primary)" opacity="0.3"/>
+          <!-- Headlight -->
+          <circle cx="17" cy="35" r="2" fill="#FFD700" opacity="0.8"/>
+        </svg>
+      </a>
+      <nav class="nav" aria-label="Navigazione principale">
+        <a href="index.html">Home</a>
+        <a href="gestione-verbali.html" aria-current="page">Gestione multe</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding:var(--space-lg) 0;">
+    <h1>Gestione verbali</h1>
+
+    <div class="toolbar" style="margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <button id="btnExportFines" class="btn btn-primary">Esporta verbali</button>
+      <button id="btnImportFines" class="btn btn-primary">Importa verbali</button>
+      <button id="btnBackupCloudFines" class="btn btn-primary" title="Salva backup sul cloud">☁️ Backup Cloud</button>
+      <button id="btnRestoreCloudFines" class="btn btn-outline" title="Ripristina da cloud">⬇️ Ripristina Cloud</button>
+      <input id="fileInputFines" type="file" accept="application/json" style="display:none" />
+    </div>
+
+    <section class="card">
+      <h2>Registra / Modifica verbale</h2>
+      <form id="fineForm">
+        <div class="form-row">
+          <label for="cf">Codice Fiscale cliente</label>
+          <input id="cf" class="input" type="text" placeholder="Es. RSSMRA85M01H501U" required />
+        </div>
+        <div class="form-row">
+          <label for="fineVehicle">Veicolo (opzionale)</label>
+          <input id="fineVehicle" class="input" type="text" placeholder="Es. Fiat 500 - AB123CD" />
+        </div>
+        <div class="form-row">
+          <label for="fineDate">Data verbale</label>
+          <input id="fineDate" class="input" type="date" />
+        </div>
+        <div class="form-row">
+          <label for="fineAmount">Importo (€)</label>
+          <input id="fineAmount" class="input" type="number" step="0.01" min="0" required />
+        </div>
+        <div class="form-row">
+          <label for="fineNote">Nota (opzionale)</label>
+          <input id="fineNote" class="input" type="text" />
+        </div>
+        <div class="form-row" style="align-items:center;display:flex;gap:12px;">
+          <label style="display:flex;align-items:center;gap:8px"><input id="finePaid" type="checkbox" /> Pagato</label>
+        </div>
+        <div style="display:flex;gap:8px" id="fineFormActions">
+          <button type="submit" class="btn btn-primary">Salva verbale</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Grafico verbali -->
+    <section class="card" style="margin-top:var(--space-md)">
+      <h2>Riepilogo stato pagamenti</h2>
+      <div style="max-width:400px;margin:0 auto">
+        <canvas id="chartFinesStatus" height="200" aria-label="Grafico stato verbali"></canvas>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:var(--space-md)">
+      <h2>Verbali registrati</h2>
+      <div style="margin-bottom:12px;display:flex;gap:8px;align-items:center;">
+        <input id="filterCf" class="input" placeholder="Cerca per codice fiscale" style="width:320px" />
+        <button id="btnClearFilter" class="btn">Pulisci</button>
+      </div>
+      <table style="width:100%">
+        <thead>
+          <tr>
+            <th>CF</th>
+            <th>Veicolo</th>
+            <th>Data</th>
+            <th>Importo (€)</th>
+            <th>Nota</th>
+            <th>Stato</th>
+            <th>Azioni</th>
+          </tr>
+        </thead>
+        <tbody id="finesList">
+          <!-- rows generated by JS -->
+        </tbody>
+      </table>
+      <div class="total-box" style="margin-top:var(--space-md)">
+        Da incassare: <span id="totalUnpaid">0.00</span> € | Totale verbali: <span id="totalFines">0.00</span> €
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal conferma -->
+  <div id="confirmModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);z-index:9999;align-items:center;justify-content:center">
+    <div class="card" style="max-width:400px;margin:20px">
+      <h3 id="confirmTitle">Conferma</h3>
+      <p id="confirmMessage"></p>
+      <div style="display:flex;gap:8px;margin-top:var(--space-md)">
+        <button id="confirmYes" class="btn btn-primary">Conferma</button>
+        <button id="confirmNo" class="btn btn-ghost">Annulla</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="auth.js"></script>
+  <script type="module" src="gestione-verbali.js"></script>
+</body>
+</html>

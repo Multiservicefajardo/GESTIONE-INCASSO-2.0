@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login — Web App Incasso</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body{ display:flex; align-items:center; justify-content:center; min-height:100vh; }
+    .login-container{ max-width:420px; width:100%; padding:20px; }
+    .login-card{ background:var(--color-surface); border-radius:var(--radius-md); padding:var(--space-xl); box-shadow:var(--shadow-lg); }
+    .login-header{ text-align:center; margin-bottom:var(--space-lg); }
+    .login-header svg{ margin:0 auto var(--space-sm); }
+    .login-header h1{ font-size:1.5rem; margin:0 0 8px 0; }
+    .login-header p{ color:var(--color-muted); font-size:0.95rem; margin:0; }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <svg width="160" height="120" viewBox="0 0 100 60" fill="none" style="display:block;margin:0 auto 8px">
+          <!-- Simple car body -->
+          <rect x="15" y="30" width="70" height="20" rx="3" fill="#00d9ff"/>
+          <!-- Car roof/cabin -->
+          <path d="M30 30 L35 15 L65 15 L70 30" fill="#00d9ff"/>
+          <!-- Front wheel -->
+          <circle cx="30" cy="52" r="8" fill="#00d9ff"/>
+          <circle cx="30" cy="52" r="4" fill="#1a1a2e" stroke="#00d9ff" stroke-width="1"/>
+          <!-- Back wheel -->
+          <circle cx="70" cy="52" r="8" fill="#00d9ff"/>
+          <circle cx="70" cy="52" r="4" fill="#1a1a2e" stroke="#00d9ff" stroke-width="1"/>
+          <!-- Windows -->
+          <rect x="38" y="18" width="10" height="10" fill="#1a1a2e" opacity="0.5"/>
+          <rect x="52" y="18" width="10" height="10" fill="#1a1a2e" opacity="0.5"/>
+          <!-- Headlight -->
+          <circle cx="17" cy="35" r="2" fill="#FFD700"/>
+        </svg>
+        <h1 style="font-family:var(--font-display);font-size:2.2rem;letter-spacing:0.05em;font-weight:800;margin:8px 0">CAR DEALER</h1>
+        <p style="color:#00d9ff;font-size:0.9rem;font-weight:500;letter-spacing:0.03em">MultiserviceFajardo.S.R.L.S</p>
+      </div>
+      
+      <form id="loginForm" class="stack">
+        <div class="form-row">
+          <label for="username">Username</label>
+          <input id="username" class="input" type="text" autocomplete="username" required autofocus />
+        </div>
+        <div class="form-row">
+          <label for="password">Password</label>
+          <input id="password" class="input" type="password" autocomplete="current-password" required />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:var(--space-sm)">Accedi</button>
+      </form>
+      
+      <div id="loginError" style="display:none;margin-top:var(--space-md);padding:12px;background:rgba(239,68,68,0.1);border:1px solid var(--color-danger);border-radius:8px;color:var(--color-danger);font-size:0.9rem"></div>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const error = document.getElementById('loginError');
+      
+      const result = await login(username, password);
+      if(result.success){
+        window.location.href = 'index.html';
+      } else {
+        error.textContent = result.message || 'Credenziali non valide';
+        error.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
