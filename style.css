@@ -1,0 +1,331 @@
+/* Design tokens copied from design/tokens.css */
+:root{
+  /* Color palette */
+  --color-bg: #f7fafc;
+  --color-surface: #ffffff;
+  --color-primary: #0b66ff;
+  --color-primary-600: #0853cc;
+  --color-secondary: #06b6d4;
+  --color-accent: #ff6b6b;
+  --brand-gradient: linear-gradient(90deg,var(--color-primary),#5aa3ff);
+  --color-muted: #6b7280;
+  --color-border: #e6e9ee;
+  --color-success: #10b981;
+  --color-danger: #ef4444;
+  --color-focus: rgba(11,102,255,0.12);
+
+  /* Typography */
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --font-display: "Poppins", var(--font-sans);
+  --text-base: 16px;
+  --scale-ratio: 1.125;
+
+  /* Spacing scale (px) */
+  --space-xxs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  /* Radii & shadows */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --shadow-sm: 0 1px 2px rgba(15,23,42,0.04);
+  --shadow-md: 0 6px 20px rgba(15,23,42,0.08);
+
+  /* Motion */
+  --ease: cubic-bezier(.2,.9,.3,1);
+  --dur-fast: 160ms;
+  --dur-medium: 260ms;
+
+  /* Text tokens (use these in component styles) */
+  --color-text: #0f1724;      /* primary body text (light) */
+  --color-heading: #0b1220;   /* headings */
+  --color-muted-on-surface: #374151; /* secondary text on surface */
+
+  /* Small size tokens */
+  --icon-size-sm: 16px;
+  --icon-size-md: 20px;
+
+  /* Strong border & large shadow */
+  --color-border-strong: #d5d9e0;
+  --shadow-lg: 0 12px 36px rgba(15,23,42,0.12);
+
+  /* Focus / accessibility */
+  --focus-ring: 3px;
+  --focus-color: rgba(11,102,255,0.14);
+
+  /* Motion (short aliases) */
+  --transition-fast: 160ms var(--ease);
+  --transition-medium: 260ms var(--ease);
+}
+
+/* Dark theme overrides */
+[data-theme="dark"]{
+  --color-bg: #0b1220;
+  --color-surface: #0f1724;
+  --color-primary: #5aa3ff;
+  --color-primary-600: #3b87ff;
+  --color-secondary: #22d3ee;
+  --color-muted: #9ca3af;
+  --color-border: rgba(255,255,255,0.06);
+  --color-focus: rgba(90,163,255,0.12);
+
+  /* Dark theme text tokens */
+  --color-text: #e6eefc;
+  --color-heading: #ffffff;
+  --color-muted-on-surface: #9ca3af;
+  --color-border-strong: rgba(255,255,255,0.08);
+}
+
+/* ---------- UI styles (from styles/ui.css) ---------- */
+
+/* Reset (minimal) */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:var(--font-sans);
+  font-size:var(--text-base);
+  background:var(--color-bg);
+  color:var(--color-text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.6;
+  font-feature-settings: "liga" 1;
+  -webkit-font-feature-settings: "liga" 1;
+}
+
+/* Typographic scale */
+h1{font-family:var(--font-display); font-size:calc(var(--text-base) * 2.0); color:var(--color-heading); margin:0 0 var(--space-md) 0}
+h2{font-family:var(--font-display); font-size:calc(var(--text-base) * 1.25); color:var(--color-heading); margin:0 0 var(--space-sm) 0}
+p, label, span{color:var(--color-muted-on-surface)}
+
+/* Container */
+.container{
+  max-width:1100px;
+  margin:0 auto;
+  padding:0 var(--space-md);
+  position:relative;
+}
+
+/* Background logo per tutte le pagine */
+.container::after{
+  content:'';
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  width:min(90%, 800px);
+  height:auto;
+  aspect-ratio:1;
+  opacity:0.03;
+  pointer-events:none;
+  z-index:0;
+  background-image:url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60"%3E%3Crect x="15" y="30" width="70" height="20" rx="3" fill="%230b66ff"/%3E%3Cpath d="M30 30 L35 15 L65 15 L70 30" fill="%230b66ff"/%3E%3Ccircle cx="30" cy="52" r="8" fill="%230b66ff"/%3E%3Ccircle cx="30" cy="52" r="4" fill="%23ffffff" stroke="%230b66ff" stroke-width="1"/%3E%3Ccircle cx="70" cy="52" r="8" fill="%230b66ff"/%3E%3Ccircle cx="70" cy="52" r="4" fill="%23ffffff" stroke="%230b66ff" stroke-width="1"/%3E%3Crect x="38" y="18" width="10" height="10" fill="%23ffffff" opacity="0.3"/%3E%3Crect x="52" y="18" width="10" height="10" fill="%23ffffff" opacity="0.3"/%3E%3Ccircle cx="17" cy="35" r="2" fill="%23FFD700" opacity="0.8"/%3E%3C/svg%3E');
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:contain;
+}
+
+/* Assicura che il contenuto sia sopra lo sfondo */
+.container > *{
+  position:relative;
+  z-index:1;
+}
+
+/* Header / Navbar */
+.header{
+  background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent);
+  border-bottom:1px solid var(--color-border);
+  backdrop-filter: blur(6px);
+}
+.header-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:var(--space-md);
+  padding:var(--space-sm) 0;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:var(--space-sm);
+  color:rgba(255,255,255,0.95);
+  font-weight:600;
+  text-decoration:none;
+  transition:opacity var(--dur-fast) var(--ease);
+}
+.brand:hover{ opacity:0.8 }
+.brand svg{ flex-shrink:0 }
+.nav{
+  display:flex;
+  gap:var(--space-sm);
+  align-items:center;
+}
+.nav a{
+  color:var(--color-muted);
+  text-decoration:none;
+  padding:6px 10px;
+  border-radius:8px;
+  transition:all var(--dur-fast) var(--ease);
+}
+.nav a:hover{ color:var(--color-surface); background:var(--color-focus)}
+
+/* Header refinements */
+.header{background:var(--brand-gradient); color:var(--color-surface);}
+.brand span{font-weight:700; font-family:var(--font-display); font-size:1rem}
+.nav a{color:rgba(255,255,255,0.9)}
+
+
+/* Buttons */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:8px 14px;
+  border-radius:10px;
+  border:1px solid transparent;
+  cursor:pointer;
+  transition:transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+  font-weight:600;
+  background:var(--color-surface);
+  color:var(--color-primary-600);
+  box-shadow:var(--shadow-sm);
+}
+.btn svg{ flex-shrink:0 }
+.btn:hover{ transform:translateY(-2px); box-shadow:var(--shadow-md) }
+.btn:active{ transform:none }
+.btn-primary{
+  background: linear-gradient(180deg,var(--color-primary),var(--color-primary-600));
+  color:white;
+  border-color:transparent;
+  box-shadow:0 8px 24px rgba(11,102,255,0.14);
+}
+.btn-ghost{
+  background:transparent;
+  color:var(--color-surface);
+  border:1px solid var(--color-border);
+}
+
+/* Outline button: visible on light surfaces, uses primary color for border/text */
+.btn-outline{
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid rgba(11,102,255,0.15);
+}
+.btn-outline:hover{ box-shadow: 0 6px 18px rgba(11,102,255,0.06); transform: translateY(-2px) }
+
+/* Danger button: red style for destructive actions */
+.btn-danger{
+  background: transparent;
+  color: var(--color-danger);
+  border: 1px solid rgba(239,68,68,0.2);
+}
+.btn-danger:hover{ box-shadow: 0 6px 18px rgba(239,68,68,0.12); transform: translateY(-2px); background: rgba(239,68,68,0.05) }
+
+/* Smaller secondary button */
+.btn-sm{padding:6px 10px; border-radius:8px; font-size:0.95rem}
+
+
+/* Card */
+.card{
+  background:var(--color-surface);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-md);
+  padding:var(--space-md);
+  box-shadow:var(--shadow-sm);
+  color:var(--color-text);
+  transition:box-shadow var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+.card:hover{ box-shadow:var(--shadow-md); transform:translateY(-2px) }
+
+/* Two-column layout for main area */
+.main-grid{display:grid; grid-template-columns: 1fr 360px; gap:var(--space-lg)}
+@media (max-width:920px){ .main-grid{grid-template-columns:1fr} }
+
+/* Form elements */
+.input{
+  width:100%;
+  padding:10px 12px;
+  border-radius:8px;
+  border:1px solid var(--color-border);
+  background:transparent;
+  color:var(--color-text);
+  outline:none;
+  transition:box-shadow var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+.input:focus{
+  border-color:var(--color-primary);
+  box-shadow:0 8px 24px var(--color-focus);
+}
+
+/* Global form elements (some pages use raw input/select/button) */
+input, select, textarea {
+  font-family:var(--font-sans);
+  font-size:var(--text-base);
+  color:var(--color-text);
+}
+button{
+  font-family:var(--font-sans);
+}
+
+/* Small utilities */
+.row{display:flex;gap:var(--space-md);align-items:center}
+.stack{display:flex;flex-direction:column;gap:var(--space-sm)}
+.kicker{font-size:12px;color:var(--color-muted);text-transform:uppercase;letter-spacing:0.08em}
+
+/* Form row helper used in index.html */
+.form-row{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+@media (min-width:720px){
+  .form-row.horizontal{flex-direction:row;align-items:center}
+  .form-row.horizontal > label, .form-row.horizontal > input, .form-row.horizontal > select{flex:1}
+}
+
+/* Table polish */
+table{background:transparent;border-radius:8px;overflow:hidden}
+th, td{padding:10px 12px}
+thead th{background:linear-gradient(180deg, rgba(0,0,0,0.02), transparent);color:var(--color-muted-on-surface);font-weight:600}
+tbody tr:nth-child(even){background:rgba(0,0,0,0.02)}
+tbody td{color:var(--color-text)}
+
+.total-box{background:linear-gradient(90deg, rgba(11,102,255,0.12), rgba(6,182,212,0.06)); color:var(--color-heading);}
+
+/* Canvas sizing helper */
+canvas{width:100% !important; height:220px !important}
+
+/* Toolbar */
+.toolbar .btn{padding:8px 12px}
+
+/* Subtle car background using inline SVG as data URI */
+.container{
+  position:relative;
+}
+.container::after{
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  width: 80%;
+  height: 50%;
+  transform: translateX(-50%);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 400'><g fill='%230b1220' opacity='0.06'><path d='M60 250c20-40 60-70 120-75h380c40 0 80 30 100 75v25H60v-25z' /><circle cx='220' cy='285' r='30' /><circle cx='540' cy='285' r='30' /></g></svg>");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: contain;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ensure content sits above the pseudo element */
+.container > *{position:relative; z-index:1}
+
+/* Responsive */
+@media (max-width:720px){
+  .row{flex-direction:column}
+  h1{font-size:1.5rem}
+}
+
+
